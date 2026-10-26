@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card p-4 shadow-sm">
+            <h3>{{ title }}</h3>
+            <form method="POST" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    {{ form.title.label(class="form-label") }}
+                    {{ form.title(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.author_id.label(class="form-label") }}
+                    {{ form.author_id(class="form-select") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.isbn.label(class="form-label") }}
+                    {{ form.isbn(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.year.label(class="form-label") }}
+                    {{ form.year(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.quantity.label(class="form-label") }}
+                    {{ form.quantity(class="form-control") }}
+                </div>
+                <div class="mb-3">
+                    {{ form.cover.label(class="form-label") }}
+                    {{ form.cover(class="form-control") }}
+                </div>
+                <button type="submit" class="btn btn-success">Сохранить</button>
+                <a href="{{ url_for('books.list_books') }}" class="btn btn-secondary">Отмена</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

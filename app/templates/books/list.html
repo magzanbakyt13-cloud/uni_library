@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2>Каталог книг</h2>
+    {% if current_user.is_authenticated and current_user.is_admin %}
+        <a href="{{ url_for('books.create') }}" class="btn btn-success">+ Добавить книгу</a>
+    {% endif %}
+</div>
+
+<form method="GET" class="row g-2 mb-4">
+    <div class="col-md-6">
+        <input type="text" name="q" class="form-control" placeholder="Поиск по названию или автору..." value="{{ search_query }}">
+    </div>
+    <div class="col-md-4">
+        <select name="sort" class="form-select">
+            <option value="title" {% if sort_by == 'title' %}selected{% endif %}>Сортировка по названию</option>
+            <option value="year" {% if sort_by == 'year' %}selected{% endif %}>Сортировка по году</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Найти</button>
+    </div>
+</form>
+
+<div class="row">
+    {% for book in books %}
+    <div class="col-md-4 mb-4">
+        <div class="card h-100 shadow-sm">
+            {% if book.cover_image %}
+                <img src="{{ url_for('static', filename='uploads/' + book.cover_image) }}" class="card-img-top" style="height: 200px; object-fit: cover;">
+            {% else %}
+                <div class="bg-secondary text-white text-center py-5" style="height: 200px;">Нет обложки</div>
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ book.title }}</h5>
+                <p class="card-text text-muted">Автор: {{ book.author.name }}</p>
+                <p class="card-text">Год: {{ book.year }} | В наличии: <strong>{{ book.quantity }}</strong></p>
+                <a href="{{ url_for('books.detail', book_id=book.id) }}" class="btn btn-outline-primary btn-sm">Подробнее</a>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <p>Книги не найдены.</p>
+    {% endfor %}
+</div>
+
+{% if pagination.pages > 1 %}
+<nav>
+    <ul class="pagination justify-content-center">
+        {% for p in pagination.iter_pages() %}
+            {% if p %}
+                <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                    <a class="page-link" href="{{ url_for('books.list_books', page=p, q=search_query, sort=sort_by) }}">{{ p }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+</nav>
+{% endif %}
+{% endblock %}

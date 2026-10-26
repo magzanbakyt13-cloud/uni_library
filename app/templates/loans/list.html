@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>История и активные выдачи</h2>
+<table class="table table-striped mt-3">
+    <thead>
+        <tr>
+            <th>Пользователь</th>
+            <th>Книга</th>
+            <th>Дата выдачи</th>
+            <th>Срок сдачи</th>
+            <th>Статус</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for loan in loans %}
+        <tr>
+            <td>{{ loan.borrower.username }}</td>
+            <td>{{ loan.book.title }}</td>
+            <td>{{ loan.issue_date.strftime('%Y-%m-%d') }}</td>
+            <td>{{ loan.due_date.strftime('%Y-%m-%d') }}</td>
+            <td>
+                {% if loan.is_returned %}
+                    <span class="badge bg-success">Возвращена ({{ loan.return_date.strftime('%Y-%m-%d') }})</span>
+                {% elif loan.is_overdue %}
+                    <span class="badge bg-danger">Просрочена!</span>
+                {% else %}
+                    <span class="badge bg-primary">На руках</span>
+                {% endif %}
+            </td>
+            <td>
+                {% if not loan.is_returned %}
+                    <form action="{{ url_for('books.return_book', loan_id=loan.id) }}" method="POST">
+                        <button type="submit" class="btn btn-sm btn-outline-success">Вернуть</button>
+                    </form>
+                {% else %}
+                    -
+                {% endif %}
+            </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6">Записей нет.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}Ы
